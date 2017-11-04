@@ -153,3 +153,25 @@ func TestBServerRemotePutCanceled(t *testing.T) {
 	}
 	testRPCWithCanceledContext(t, serverConn, f)
 }
+
+var errUnauthorized = kbfsblock.BServerErrorUnauthorized{Msg: "Fake error"}
+
+type errorBServerClient struct {
+	keybase1.BlockInterface
+}
+
+func (ec errorBServerClient) PutBlock(
+	ctx context.Context, arg keybase1.PutBlockArg) error {
+	return errUnauthorized
+}
+
+// We should unwrap a kbfsblock.BServerErrorUnauthorized{} as a
+// BServerErrorUnauthorized{}.
+func TestBServerUnwrapBServerErrorUnauthorized(t *testing.T) {
+	config := testBlockServerRemoteConfig{newTestCodecGetter(),
+		newTestLogMaker(t), nil, nil, nil}
+	b := newBlockServerRemoteWithClient(config, errorBServerClient{})
+
+	err := b.Put(context.Background(), tlf.ID{}, kbfsblock.ID{}, kbfsblock.Context{}, nil, kbfscrypto.BlockCryptKeyServerHalf{})
+	require.Equal(t, BServerErrorUnauthorized{errUnauthorized}, err)
+}
