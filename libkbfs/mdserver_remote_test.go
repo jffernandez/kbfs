@@ -12,12 +12,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// Ideally, we'd be able to run the tests below by instantiating an
+// MDServerRemote, but there's no convenient way to do that. So
+// manually verify that MDServerRemote uses mdServerErrorUnwrapper.
+
 // We should unwrap a kbfsmd.ServerErrorUnauthorized{} as a
 // mdServerErrorUnauthorized{}.
-//
-// Ideally, we'd be able to test this by instantiating a
-// BServerRemote, but there's no convenient way to maintain that. So
-// manually verify that MDServerRemote uses mdServerErrorUnwrapper.
 func TestMDServerUnwrapErrorUnauthorized(t *testing.T) {
 	var eu mdServerErrorUnwrapper
 	status := keybase1.Status{
@@ -26,6 +26,20 @@ func TestMDServerUnwrapErrorUnauthorized(t *testing.T) {
 	ae, de := eu.UnwrapError(&status)
 	require.Equal(t, mdServerErrorUnauthorized{
 		kbfsmd.ServerErrorUnauthorized{},
+	}, ae)
+	require.NoError(t, de)
+}
+
+// We should unwrap a kbfsmd.ServerErrorWriteAccess{} as a
+// mdServerErrorWriteAccess{}.
+func TestMDServerUnwrapErrorWriteAccess(t *testing.T) {
+	var eu mdServerErrorUnwrapper
+	status := keybase1.Status{
+		Code: kbfsmd.StatusCodeServerErrorWriteAccess,
+	}
+	ae, de := eu.UnwrapError(&status)
+	require.Equal(t, mdServerErrorWriteAccess{
+		kbfsmd.ServerErrorWriteAccess{},
 	}, ae)
 	require.NoError(t, de)
 }

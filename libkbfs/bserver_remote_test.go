@@ -155,10 +155,10 @@ func TestBServerRemotePutCanceled(t *testing.T) {
 }
 
 // We should unwrap a kbfsblock.BServerErrorUnauthorized{} as a
-// BServerErrorUnauthorized{}.
+// bServerErrorUnauthorized{}.
 //
 // Ideally, we'd be able to test this by instantiating a
-// BServerRemote, but there's no convenient way to maintain that. So
+// BServerRemote, but there's no convenient way to do that. So
 // manually verify that BServerRemote uses bServerErrorUnwrapper.
 func TestBServerUnwrapErrorUnauthorized(t *testing.T) {
 	msg := "fake error"

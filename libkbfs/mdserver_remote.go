@@ -139,6 +139,23 @@ func (md *MDServerRemote) setIsAuthenticated(isAuthenticated bool) {
 	md.isAuthenticated = isAuthenticated
 }
 
+// mdServerErrorUnwrapper wraps kbfsmd.ServerErrorUnwrapper to
+// convert some kbfsmd error types to our own.
+type mdServerErrorUnwrapper struct {
+	kbfsmd.ServerErrorUnwrapper
+}
+
+func (eu mdServerErrorUnwrapper) UnwrapError(arg interface{}) (appError error, dispatchError error) {
+	appError, dispatchError = eu.ServerErrorUnwrapper.UnwrapError(arg)
+	switch err := appError.(type) {
+	case kbfsmd.ServerErrorUnauthorized:
+		appError = mdServerErrorUnauthorized{err}
+	case kbfsmd.ServerErrorWriteAccess:
+		appError = mdServerErrorWriteAccess{err}
+	}
+	return appError, dispatchError
+}
+
 func (md *MDServerRemote) initNewConnection() {
 	md.connMu.Lock()
 	defer md.connMu.Unlock()

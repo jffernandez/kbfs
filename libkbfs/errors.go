@@ -1137,9 +1137,18 @@ func (e DiskBlockCacheError) Error() string {
 	return "DiskBlockCacheError{" + e.Msg + "}"
 }
 
-// bServerErrorUnauthorized is a wrapper around
-// kbfsblock.BServerErrorUnauthorized that also implements
-// fuse.ErrorNumber. See bServerErrorUnwrapper for where this is used.
+// The errors below are wrappers that also implement
+// fuse.ErrorNumber. See bServerErrorUnwrapper and
+// mdServerErrorUnwrapper for where they are used.
+
 type bServerErrorUnauthorized struct {
 	kbfsblock.BServerErrorUnauthorized
+}
+
+type mdServerErrorUnauthorized struct {
+	kbfsmd.ServerErrorUnauthorized
+}
+
+type mdServerErrorWriteAccess struct {
+	kbfsmd.ServerErrorWriteAccess
 }

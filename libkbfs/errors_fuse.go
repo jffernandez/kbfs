@@ -149,3 +149,15 @@ var _ fuse.ErrorNumber = bServerErrorUnauthorized{}
 func (e bServerErrorUnauthorized) Errno() fuse.Errno {
 	return fuse.Errno(syscall.EACCES)
 }
+
+var _ fuse.ErrorNumber = mdServerErrorUnauthorized{}
+
+func (e mdServerErrorUnauthorized) Errno() fuse.Errno {
+	return fuse.Errno(syscall.EACCES)
+}
+
+var _ fuse.ErrorNumber = mdServerErrorWriteAccess{}
+
+func (e mdServerErrorWriteAccess) Errno() fuse.Errno {
+	return fuse.Errno(syscall.EACCES)
+}
