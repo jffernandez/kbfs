@@ -82,6 +82,18 @@ func newBlockServerRemoteClientHandler(name string, log logger.Logger,
 	return b
 }
 
+type bServerErrorUnwrapper struct {
+	kbfsblock.BServerErrorUnwrapper
+}
+
+func (eu bServerErrorUnwrapper) UnwrapError(arg interface{}) (appError error, dispatchError error) {
+	appError, dispatchError = eu.BServerErrorUnwrapper.UnwrapError(arg)
+	if err, ok := appError.(kbfsblock.BServerErrorUnauthorized); ok {
+		appError = BServerErrorUnauthorized{err}
+	}
+	return appError, dispatchError
+}
+
 func (b *blockServerRemoteClientHandler) initNewConnection() {
 	b.connMu.Lock()
 	defer b.connMu.Unlock()

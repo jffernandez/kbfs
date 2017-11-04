@@ -143,3 +143,10 @@ var _ fuse.ErrorNumber = &ErrDiskLimitTimeout{}
 func (e *ErrDiskLimitTimeout) Errno() fuse.Errno {
 	return fuse.Errno(syscall.ENOSPC)
 }
+
+var _ fuse.ErrorNumber = BServerErrorUnauthorized{}
+
+// Errno implements the fuse.ErrorNumber interface for BServerErrorUnauthorized.
+func (e BServerErrorUnauthorized) Errno() fuse.Errno {
+	return fuse.Errno(syscall.EACCES)
+}

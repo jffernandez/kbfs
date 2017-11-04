@@ -1136,3 +1136,10 @@ func (e DiskBlockCacheError) ToStatus() (s keybase1.Status) {
 func (e DiskBlockCacheError) Error() string {
 	return "DiskBlockCacheError{" + e.Msg + "}"
 }
+
+// BServerErrorUnauthorized is a wrapper around
+// kbfsblock.BServerErrorUnauthorized that also implements
+// fuse.ErrorNumber.
+type BServerErrorUnauthorized struct {
+	kbfsblock.BServerErrorUnauthorized
+}
