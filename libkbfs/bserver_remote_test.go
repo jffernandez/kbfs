@@ -158,7 +158,8 @@ func TestBServerRemotePutCanceled(t *testing.T) {
 // BServerErrorUnauthorized{}.
 //
 // Ideally, we'd be able to test this by instantiating a
-// BServerRemote, but there's no convenient way to maintain that.
+// BServerRemote, but there's no convenient way to maintain that. So
+// manually verify that BServerRemote uses bServerErrorUnwrapper.
 func TestBServerUnwrapBServerErrorUnauthorized(t *testing.T) {
 	msg := "fake error"
 	var eu bServerErrorUnwrapper
