@@ -154,24 +154,21 @@ func TestBServerRemotePutCanceled(t *testing.T) {
 	testRPCWithCanceledContext(t, serverConn, f)
 }
 
-var errUnauthorized = kbfsblock.BServerErrorUnauthorized{Msg: "Fake error"}
-
-type errorBServerClient struct {
-	keybase1.BlockInterface
-}
-
-func (ec errorBServerClient) PutBlock(
-	ctx context.Context, arg keybase1.PutBlockArg) error {
-	return errUnauthorized
-}
-
 // We should unwrap a kbfsblock.BServerErrorUnauthorized{} as a
 // BServerErrorUnauthorized{}.
+//
+// Ideally, we'd be able to test this by instantiating a
+// BServerRemote, but there's no convenient way to maintain that.
 func TestBServerUnwrapBServerErrorUnauthorized(t *testing.T) {
-	config := testBlockServerRemoteConfig{newTestCodecGetter(),
-		newTestLogMaker(t), nil, nil, nil}
-	b := newBlockServerRemoteWithClient(config, errorBServerClient{})
-
-	err := b.Put(context.Background(), tlf.ID{}, kbfsblock.ID{}, kbfsblock.Context{}, nil, kbfscrypto.BlockCryptKeyServerHalf{})
-	require.Equal(t, BServerErrorUnauthorized{errUnauthorized}, err)
+	msg := "fake error"
+	var eu bServerErrorUnwrapper
+	status := keybase1.Status{
+		Code: kbfsblock.StatusCodeBServerErrorUnauthorized,
+		Desc: msg,
+	}
+	ae, de := eu.UnwrapError(&status)
+	require.Equal(t, BServerErrorUnauthorized{
+		kbfsblock.BServerErrorUnauthorized{Msg: msg},
+	}, ae)
+	require.NoError(t, de)
 }
