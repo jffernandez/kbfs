@@ -166,7 +166,7 @@ func (md *MDServerRemote) initNewConnection() {
 
 	md.conn = rpc.NewTLSConnection(
 		md.mdSrvAddr, kbfscrypto.GetRootCerts(md.mdSrvAddr),
-		kbfsmd.ServerErrorUnwrapper{}, md, md.rpcLogFactory,
+		mdServerErrorUnwrapper{}, md, md.rpcLogFactory,
 		md.config.MakeLogger(""), md.connOpts)
 	md.client = keybase1.MetadataClient{Cli: md.conn.GetClient()}
 }
