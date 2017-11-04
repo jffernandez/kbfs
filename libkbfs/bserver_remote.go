@@ -82,6 +82,8 @@ func newBlockServerRemoteClientHandler(name string, log logger.Logger,
 	return b
 }
 
+// bServerErrorUnwrapper wraps kbfsblock.BServerErrorUnwrapper to
+// convert some kbfsblock error types to our own.
 type bServerErrorUnwrapper struct {
 	kbfsblock.BServerErrorUnwrapper
 }
