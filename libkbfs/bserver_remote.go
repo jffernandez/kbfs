@@ -91,7 +91,7 @@ type bServerErrorUnwrapper struct {
 func (eu bServerErrorUnwrapper) UnwrapError(arg interface{}) (appError error, dispatchError error) {
 	appError, dispatchError = eu.BServerErrorUnwrapper.UnwrapError(arg)
 	if err, ok := appError.(kbfsblock.BServerErrorUnauthorized); ok {
-		appError = BServerErrorUnauthorized{err}
+		appError = bServerErrorUnauthorized{err}
 	}
 	return appError, dispatchError
 }

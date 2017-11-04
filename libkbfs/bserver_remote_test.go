@@ -160,7 +160,7 @@ func TestBServerRemotePutCanceled(t *testing.T) {
 // Ideally, we'd be able to test this by instantiating a
 // BServerRemote, but there's no convenient way to maintain that. So
 // manually verify that BServerRemote uses bServerErrorUnwrapper.
-func TestBServerUnwrapBServerErrorUnauthorized(t *testing.T) {
+func TestBServerUnwrapErrorUnauthorized(t *testing.T) {
 	msg := "fake error"
 	var eu bServerErrorUnwrapper
 	status := keybase1.Status{
@@ -168,7 +168,7 @@ func TestBServerUnwrapBServerErrorUnauthorized(t *testing.T) {
 		Desc: msg,
 	}
 	ae, de := eu.UnwrapError(&status)
-	require.Equal(t, BServerErrorUnauthorized{
+	require.Equal(t, bServerErrorUnauthorized{
 		kbfsblock.BServerErrorUnauthorized{Msg: msg},
 	}, ae)
 	require.NoError(t, de)
